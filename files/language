@@ -1,0 +1,7 @@
+# Skript feito por Kick Holse
+# Discord: https://www.kskripts.tk/discord
+
+options:
+  life-bars: 1
+  enabled-worlds:
+  - world
