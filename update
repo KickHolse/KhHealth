@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────── #
+#                    ██ ▄█▀  ██████                   #
+#                    ██▄█▒ ▒██    ▒                   #
+#                   ▓███▄░ ░ ▓██▄                     #
+#                   ▓██ █▄   ▒   ██▒                  #
+#                   ▒██▒ █▄▒██████▒▒                  #
+#                   ▒ ▒▒ ▓▒▒ ▒▓▒ ▒ ░                  #
+#                   ░ ░▒ ▒░░ ░▒  ░ ░                  #
+#                   ░ ░░ ░ ░  ░  ░                    #
+#                   ░  ░         ░                    #
+# ─────────────────────────────────────────────────── #
+options:
+#	Nome: KhHealth | Autor: Kick Holse
+	version: 1.2
+
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# events
+
+on player world change:
+	khhelp_setlife(player)
+on join:
+	khhelp_setlife(player)
+
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# file manager
+function khhealth_filemanager(use: text):
+	#{_use} == "value":
+		#loop currently loaded yaml files:
+		#	loop-value contains "khcl.language" or "khcl.collectibles/main" or "khcl.collectibles/morphs" or "khcl.collectibles/animatedhats" or "khcl.collectibles/particles" or "khcl.collectibles/clothes" or "khcl.collectibles/banners" or "khcl.collectibles/hats"
+		#	unload yaml loop-value
+		#loop "language" and "collectibles/main" and "collectibles/morphs" and "collectibles/animatedhats" and "collectibles/particles" and "collectibles/clothes" and "collectibles/hats" and "collectibles/banners":
+		#	load yaml "plugins/KhCollectibles/%loop-value%.yml" as "khcl.%loop-value%"
+	{_use} == "create":
+		#khcollects_filemanager("value")
+
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# functions
+function khhelp_setlife(p: player):
+	set {_list::*} to skutil yaml list "enabled-worlds" from file "{@config-file}"
+	loop {_list::*}:
+		if loop-value is "%{_p}'s world%":
+			set {_p}'s max health to {khhel::lifes}
+			set {_p}'s health to {khhel::lifes}
+
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# load
+load:
+	khhealth_filemanager("create")
+	wait 1 second
+	text from "https://api.spigotmc.org/legacy/update.php?resource=69424" != "{@version}":
+		set {khhealth::check_update} to "true"
+		send "&3[KHHEALTH] &cYou are not using the latest version of skript" to console
+	else:
+		send "&3[KHHEALTH] &aYou are using the latest version of skript" to console
+	send "&3[KHHEALTH] &aKhHealth &8v{@version} &aenabled!" to console
