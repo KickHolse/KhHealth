@@ -15,32 +15,44 @@ options:
 
 # ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # events
+join:
+	khcore_notifyUpdate(player, "KhHealth", "KhHealth", "69424", "{@version}", "khhealth atualizar")
+	khhealth_Setup(player)
+player world change:
+	khhealth_Setup(player)
 
-on player world change:
-	khhelp_setlife(player)
-on join:
-	khhelp_setlife(player)
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# commands
+command /khhealth [<text = help>]:
+	permission: khhealth.*
+	permission message: §3[KhHealth] §7v{@version} §f- §7Criado por §6Kick Holse§7.
+	trigger:
+		arg 1 == "help":
+			send "%nl%  &eAjuda - KhHealth &71/1%nl% "
+			send "&3 /khhealth atualizar &f- &7Atualiza o skript"
+		arg 1 == "atualizar":
+			khcore_update(player, "%{khhealth::check_update}%", "KhHealth", script)
 
 # ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # file manager
 function khhealth_filemanager(use: text):
-	#{_use} == "value":
-		#loop currently loaded yaml files:
-		#	loop-value contains "khcl.language" or "khcl.collectibles/main" or "khcl.collectibles/morphs" or "khcl.collectibles/animatedhats" or "khcl.collectibles/particles" or "khcl.collectibles/clothes" or "khcl.collectibles/banners" or "khcl.collectibles/hats"
-		#	unload yaml loop-value
-		#loop "language" and "collectibles/main" and "collectibles/morphs" and "collectibles/animatedhats" and "collectibles/particles" and "collectibles/clothes" and "collectibles/hats" and "collectibles/banners":
-		#	load yaml "plugins/KhCollectibles/%loop-value%.yml" as "khcl.%loop-value%"
 	{_use} == "create":
-		#khcollects_filemanager("value")
+		khcore_downGithub("KhHealth/language.yml", "https://raw.githubusercontent.com/KickHolse/KhHealth/master/files/language")
+		loop currently loaded yaml files:
+			loop-value contains "khhealth.language"
+			unload yaml loop-value
+		load yaml "plugins/KhHealth/language.yml" as "khhealth.language"
 
 # ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # functions
-function khhelp_setlife(p: player):
-	set {_list::*} to skutil yaml list "enabled-worlds" from file "{@config-file}"
+function khhealth_Setup(p: player):
+	set {_list::*} to skutil yaml list "options.enabled-worlds" from file "plugins/KhHealth/language.yml"
 	loop {_list::*}:
 		if loop-value is "%{_p}'s world%":
-			set {_p}'s max health to {khhel::lifes}
-			set {_p}'s health to {khhel::lifes}
+			set {_p}'s max health to yaml value "options.hearts" from "khhealth.language"
+			set {_p}'s health to yaml value "options.hearts" from "khhealth.language"
+			stop
+		set {_p}'s max health to 10
 
 # ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # load
