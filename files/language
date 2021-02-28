@@ -2,6 +2,6 @@
 # Discord: https://www.kskripts.tk/discord
 
 options:
-  life-bars: 1
+  life-bars: 2
   enabled-worlds:
   - world
